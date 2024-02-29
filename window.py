@@ -1,0 +1,53 @@
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(1075, 759)
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton.setGeometry(QtCore.QRect(900, 110, 93, 28))
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_2.setGeometry(QtCore.QRect(730, 110, 93, 28))
+        self.pushButton_2.setObjectName("pushButton_2")
+        self.radioButton = QtWidgets.QRadioButton(self.centralwidget)
+        self.radioButton.setGeometry(QtCore.QRect(730, 270, 95, 20))
+        self.radioButton.setObjectName("radioButton")
+        self.radioButton_2 = QtWidgets.QRadioButton(self.centralwidget)
+        self.radioButton_2.setGeometry(QtCore.QRect(730, 310, 95, 20))
+        self.radioButton_2.setObjectName("radioButton_2")
+        self.radioButton_3 = QtWidgets.QRadioButton(self.centralwidget)
+        self.radioButton_3.setGeometry(QtCore.QRect(730, 350, 95, 20))
+        self.radioButton_3.setObjectName("radioButton_3")
+        self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit.setGeometry(QtCore.QRect(730, 80, 261, 22))
+        self.lineEdit.setObjectName("lineEdit")
+        self.verticalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(30, 20, 611, 651))
+        self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
+        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout.setObjectName("verticalLayout")
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1075, 26))
+        self.menubar.setObjectName("menubar")
+        MainWindow.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        self.statusbar.setObjectName("statusbar")
+        MainWindow.setStatusBar(self.statusbar)
+
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.pushButton.setText(_translate("MainWindow", "Искать"))
+        self.pushButton_2.setText(_translate("MainWindow", "Отмена"))
+        self.radioButton.setText(_translate("MainWindow", "Схема"))
+        self.radioButton_2.setText(_translate("MainWindow", "Спутник"))
+        self.radioButton_3.setText(_translate("MainWindow", "Гибрид"))

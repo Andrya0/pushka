@@ -1,54 +1,100 @@
+import os.path
 import sys
-import requests
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
-from PyQt5.QtGui import QPixmap, QKeyEvent
-from PyQt5.QtCore import Qt
-from io import BytesIO
 
-class Map(QMainWindow):
+from PyQt5 import uic  # Импортируем uic
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
+from pip._vendor import requests
+
+
+class MapParams(object):
+    def __init__(self):
+        self.lat = 61.665279
+        self.lon = 50.839492
+        self.zoom = 16
+        self.type = "map"  # "sat", "sat,skl"
+
+    def ll(self):
+        return str(self.lon) + "," + str(self.lat)
+
+
+class WindowMain(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.mp = MapParams()
+        uic.loadUi('window.ui', self)  # Загружаем дизайн
+        self.initUI()
+        self.pushButton.clicked.connect(self.search)
+        self.radioButton.clicked.connect(self.mapp)
+        self.radioButton_2.clicked.connect(self.satt)
+        self.radioButton_3.clicked.connect(self.gibr)
 
-        self.a = 55.751244
-        self.b = 37.618423
-        self.scale = 10
-        self.min_scale = 1
-        self.max_scale = 13
+    def initUI(self):
+        self.setWindowTitle('Отображение картинки')
+        self.update()
 
-        self.setFixedSize(800, 800)
+    def search(self):
+        print('я работаю!')
 
-        self.load_map()
+    def mapp(self):
+        self.mp.type = 'map'
+        self.update()
 
-    def load_map(self):
-        r_url = f"http://static-maps.yandex.ru/1.x/?ll={self.b},{self.a}&z={self.scale}&l=map&size=400,400"
+    def satt(self):
+        self.mp.type = 'sat'
+        self.update()
 
-        resp = requests.get(r_url)
-        if resp.status_code == 200:
-            pixmap = QPixmap()
-            pixmap.loadFromData(BytesIO(resp.content).read())
+    def gibr(self):
+        self.mp.type = "sat,skl"
+        self.update()
 
-            pixmap = pixmap.scaled(800, 800, Qt.KeepAspectRatio)
+    def zooming(self, event):
+        if event.key() == Qt.Page_UP and self.zoom < 19:
+            self.mp.zoom += 1
+            self.update()
+        elif event.key() == Qt.Key_Page_DOWN and self.zoom > 2:
+            self.mp.zoom -= 1
+            self.update()
 
-            m_label = self.findChild(QLabel)
-            if m_label is None:
-                m_label = QLabel(self)
-            m_label.setPixmap(pixmap)
-            m_label.setGeometry(0, 0, 800, 800)
+    def update(self):
+        load_map(self.mp)
+        if os.path.exists('map.png'):
+            pixmap = QPixmap('map.png')
+            self.image_map.setPixmap(pixmap)
 
 
-    def keyPressEvent(self, event: QKeyEvent):
-        if event.key() == Qt.Key_PageUp:
-            if self.scale < self.max_scale:
-                self.scale += 1
-                self.load_map()
-        elif event.key() == Qt.Key_PageDown:
-            if self.scale > self.min_scale:
-                self.scale -= 1
-                self.load_map()
-        super().keyPressEvent(event)
+
+def load_map(mp):
+    map_request = "http://static-maps.yandex.ru/1.x/"
+    params = {
+        "ll": mp.ll(),
+        "spn": ",".join([str(mp.zoom), str(mp.zoom)]),
+        "l": mp.type
+    }
+    response = requests.get(map_request, params=params)
+    print(response)
+    if not response:
+        print("Ошибка выполнения запроса:")
+        print(map_request)
+        print("Http статус:", response.status_code, "(", response.reason, ")")
+        sys.exit(1)
+
+    map_file = "map.png"
+    try:
+        with open(map_file, "wb") as file:
+            file.write(response.content)
+    except IOError as ex:
+        print("Ошибка записи временного файла:", ex)
+        sys.exit(2)
+    return map_file
+
+
+def main():
+    app = QApplication(sys.argv)
+    ex = WindowMain()
+    ex.show()
+    sys.exit(app.exec_())
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    map_app = Map()
-    map_app.show()
-    sys.exit(app.exec_())
+    main()
